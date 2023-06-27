@@ -12,20 +12,18 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
-public class MainIndexOf {
-    static final String WEB = "https://www.ucenibezucebnic.cz/images/ep/metody/prakticke-zaloha/"; // in the end should be "/"
-    static final String FOLDER = "data/ucenibezucebnic/"; // in the end should be "/"
+public class MainIndexOfHtml {
+    static final String WEB = "http://www.elsat.cz/panek/"; // in the end should be "/"
+    static final String FOLDER = "data/gmct/"; // in the end should be "/"
     static final String TREE = "tree/"; // in the end should be "/"
     static boolean DEBUG = false;
     static List<Boolean> vrstvy = new ArrayList<>();
-    static String strom = TREE + "tree.txt";
+    static String html = TREE + "tree.html";
     static BufferedWriter writer = null;
     public static void main(String[] args) {
 
@@ -56,7 +54,12 @@ public class MainIndexOf {
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 
         try {
-            File file = new File(strom);
+            File file = new File(html);
+
+            if(file.exists()){
+                file.delete();
+            }
+
             File parentDirectory = file.getParentFile();
 
             //this creates folders for tree file
@@ -66,20 +69,23 @@ public class MainIndexOf {
                 }
             }
 
-            if (!file.exists()) {
-                if (file.createNewFile()) {
-                    System.out.println("File created: " + strom);
-                } else {
-                    System.out.println("Failed to create the file.");
-                    return;
-                }
+            if (file.createNewFile()) {
+                System.out.println("File created: " + html);
+            } else {
+                System.out.println("Failed to create the file.");
+                return;
             }
+
             writer = new BufferedWriter(new FileWriter(file, true));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        System.out.println(WEB);
+        try {
+            writeLineHtml(WEB, WEB);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         readURLContent(WEB, 0);
         try {
             writer.close();
@@ -116,20 +122,20 @@ public class MainIndexOf {
                     }
 
                 }
+                String newurl = url + linkUrl;
                 if (1 == (pocetLinku-i)){
-                    writeLine(line +"└── " +linkUrl);
+                    writeLineHtml(line +"└── " +linkUrl, newurl);
                     vrstvy.set(vrstva, false);
                 }else {
-                    writeLine(line +"├── " +linkUrl);
+                    writeLineHtml(line +"├── " +linkUrl, newurl);
                 }
 
-                String newurl = url + linkUrl;
                 //System.out.println(newurl);
                 if(newurl.endsWith("/")){
                     //System.out.println("New folder: " + newurl);
                     readURLContent(newurl, vrstva+1);
                 }else{
-                    String[] extensions = {".txt", ".doc",".epub", ".pdf", ".zip", ".rar", ".docx", ".xls", ".mp3",".mp4",".avi",".prc",".html"};
+                    /*String[] extensions = {".txt", ".doc",".epub", ".pdf", ".zip", ".rar", ".docx", ".xls", ".mp3",".mp4",".avi",".prc",".html"};
                     if (checkIfFileHasExtension(newurl, extensions)) {
                         //System.out.println("         "+newurl);
                         File file = new File(FOLDER+ newurl.substring(WEB.length()));
@@ -146,7 +152,7 @@ public class MainIndexOf {
                                 System.err.println("Problem pri stahovani: " + e.getMessage());
                             }
                         }
-                    }
+                    }*/
                 }
             }
         }catch (Exception e) {
@@ -160,6 +166,12 @@ public class MainIndexOf {
     public static void writeLine(String string) throws IOException {
         System.out.println(string);
         writer.write(string);
+        writer.newLine();
+    }
+    public static void writeLineHtml(String string, String newurl) throws IOException {
+        System.out.println(string);
+        String line = "<pre style=\"margin: 0px\"><a style=\"text-decoration: none\" href=" + newurl+ "> "+string+"  </a></pre>";
+        writer.write(line);
         writer.newLine();
     }
 
