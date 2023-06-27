@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    static List<String> keKontrole = new ArrayList<>();
     static final String WEB = "https://web2.mlp.cz/koweb/00/04/"; // in the end should be "/"
     static final String FOLDER = "data/koweb/00/04/"; // in the end should be "/"
     static boolean DEBUG = false;
@@ -27,7 +26,6 @@ public class Main {
             String retezec = "";
             while (sc.hasNextLine()) {
                 String newurl = url +sc.nextLine();
-                keKontrole.add(newurl);
 
                 if(newurl.endsWith("\\")){
                     newurl = newurl.substring(0, newurl.length() - 1) + "/";
