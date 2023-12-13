@@ -1,4 +1,4 @@
-package org.spider;
+package tests;
 
 
 public class Rekurze {

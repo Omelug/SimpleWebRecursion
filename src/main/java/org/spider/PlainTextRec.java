@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
-public class Main {
+public class PlainTextRec {
     static final String WEB = "https://web2.mlp.cz/koweb/00/04/"; // in the end should be "/"
     static final String FOLDER = "data/koweb/00/04/"; // in the end should be "/"
     static boolean DEBUG = false;
